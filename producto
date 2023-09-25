@@ -1,0 +1,117 @@
+//Aquí es el producto final que se ha logrado hacer y poder comercializar para todos los interezados.
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+//aquí se le agregan de nuevo la interfaza para la aplicación
+class Producto {
+    private String nombre;
+    private double precio;
+    private int stock;
+
+//Aquí se utiliza para agregar valores y poder utilizarlos sin problemas 
+    public Producto(String nombre, double precio, int stock) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.stock = stock;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void restarStock(int cantidad) {
+        stock -= cantidad;
+    }
+}
+
+class PuntoDeVenta {
+    private List<Producto> inventario;
+
+    public PuntoDeVenta() {
+        inventario = new ArrayList<>();
+    }
+
+    public void agregarProducto(Producto producto) {
+        inventario.add(producto);
+    }
+
+//Esto sirve para el menú y pueda mostrarte los datos que necesitas
+    public void realizarVenta(String nombreProducto, int cantidad) {
+        for (Producto producto : inventario) {
+            if (producto.getNombre().equals(nombreProducto)) {
+                if (producto.getStock() >= cantidad) {
+                    producto.restarStock(cantidad);
+                    double total = producto.getPrecio() * cantidad;
+                    System.out.println("Venta realizada: " + cantidad + " " + nombreProducto + "(s) por $" + total);
+                } else {
+                    System.out.println("No hay suficiente stock de " + nombreProducto);
+                }
+                return;
+            }
+        }
+        System.out.println(nombreProducto + " no encontrado en el inventario");
+    }
+
+//Más valores en caso dedar error 
+    public void mostrarInventario() {
+        System.out.println("Inventario:");
+        for (Producto producto : inventario) {
+            System.out.println(producto.getNombre() + " - Precio: $" + producto.getPrecio() + " - Stock: " + producto.getStock());
+        }
+    }
+}
+
+//Aqui de alguna forma se utilzalo mismo del punto anterior
+public class Main {
+    public static void main(String[] args) {
+        PuntoDeVenta tienda = new PuntoDeVenta();
+        Scanner scanner = new Scanner(System.in);
+
+        Producto producto1 = new Producto("Camiseta", 15.99, 50);
+        Producto producto2 = new Producto("Zapatos", 49.99, 30);
+
+        tienda.agregarProducto(producto1);
+        tienda.agregarProducto(producto2);
+
+        int opcion;
+        do {
+//estos son las opciones que aparecen en el menú        
+            System.out.println("\nMenú de Opciones:");
+            System.out.println("1. Realizar Venta");
+            System.out.println("2. Mostrar Inventario");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextInt();
+
+//Es el funcionamiento para las opciones del menú
+            switch (opcion) {
+                case 1:
+                    scanner.nextLine(); // Limpiar el buffer
+                    System.out.print("Ingrese el nombre del producto: ");
+                    String nombreProducto = scanner.nextLine();
+                    System.out.print("Ingrese la cantidad a vender: ");
+                    int cantidadVenta = scanner.nextInt();
+                    tienda.realizarVenta(nombreProducto, cantidadVenta);
+                    break;
+                case 2:
+                    tienda.mostrarInventario();
+                    break;
+                case 3:
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (opcion != 3);
+    }
+}
